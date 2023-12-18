@@ -6,10 +6,14 @@ from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db
+from api.models import db, User
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
 
 # from models import Person
 
@@ -26,6 +30,9 @@ if db_url is not None:
         "postgres://", "postgresql://")
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
+
+app.config["JWT_SECRET_KEY"] = "La super mega Encriptacion de Jose, el secreto mejor guardado del mundo."
+jwt = JWTManager(app)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
@@ -66,6 +73,44 @@ def serve_any_other_file(path):
     response = send_from_directory(static_file_dir, path)
     response.cache_control.max_age = 0  # avoid cache memory
     return response
+
+#Traer todos los usuarios
+@app.route('/user', methods=['GET'])
+def get_users():
+    all_users = User.query.all()
+    result = list(map(lambda user: user.serialize(), all_users))
+
+    return jsonify(result), 200
+
+#Traer un usuario por su ID
+@app.route('/user/<int:user_id>', methods=['GET'])
+@jwt_required()
+def get_user(user_id):
+    one_user = User.query.filter_by(id=user_id).first()
+
+    basic_info = request.args.get('basic', False)
+
+    if basic_info and basic_info.lower() == 'true':
+        return jsonify(one_user.serialize_basic()), 200
+    else:
+        return jsonify(one_user.serialize()), 200
+
+#Login
+@app.route("/login", methods=["POST"])
+def login():
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+    user = User.query.filter_by(email=email).first()
+
+    if user is "None":
+        return jsonify({"msg":"Error en el Email"}), 401
+    
+    if user.password != password:
+        return jsonify({"msg":"Error en el password"}), 401
+
+    access_token = create_access_token(identity=email)
+    return jsonify(access_token=access_token)
+
 
 
 # this only runs if `$ python src/main.py` is executed
