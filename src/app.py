@@ -102,7 +102,7 @@ def login():
     password = request.json.get("password", None)
     user = User.query.filter_by(email=email).first()
 
-    if user is "None":
+    if user.email is "None":
         return jsonify({"msg":"Error en el Email"}), 401
     
     if user.password != password:
@@ -110,6 +110,25 @@ def login():
 
     access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token)
+
+
+# Crar un nuevo usuario
+@app.route('/signup', methods=['POST'])
+def create_new_user():
+    data = request.get_json()
+
+    new_user = User(
+        email=data['email'],
+        password=data['password'],
+        is_active=bool(data['is_active'])
+    )
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    response_body = {"msg": f"El Usuario {new_user.email} se creo correctamente."}
+    return jsonify(response_body)
+
 
 
 

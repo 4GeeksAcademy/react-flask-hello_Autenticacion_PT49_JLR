@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
+import { Link } from "react-router-dom";
 import rigoImageUrl from "../../img/rigo-baby.jpg";
 import "../../styles/home.css";
 
@@ -8,6 +9,12 @@ export const Home = () => {
 
 	return (
 		<div className="text-center mt-5">
+			<Link to="/login">
+				<button className="btn btn-primary">Boton a Login</button>
+			</Link>
+			<Link to="/signup">
+				<button className="btn btn-primary">Boton a signup</button>
+			</Link>
 			<h1>Hello Rigo!!</h1>
 			<p>
 				<img src={rigoImageUrl} />
