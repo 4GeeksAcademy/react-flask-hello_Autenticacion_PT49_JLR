@@ -14,6 +14,8 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
+
 
 # from models import Person
 
@@ -21,6 +23,7 @@ ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "https://fuzzy-space-barnacle-rjw954q656phxgx5-3000.app.github.dev"}}, supports_credentials=True)
 app.url_map.strict_slashes = False
 
 # database condiguration
@@ -47,7 +50,9 @@ setup_commands(app)
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
 
+CORS(app, resources={r"/api/*": {"origins": "https://fuzzy-space-barnacle-rjw954q656phxgx5-3000.app.github.dev"}}, supports_credentials=True)
 # Handle/serialize errors like a JSON object
+
 
 
 @app.errorhandler(APIException)
@@ -102,7 +107,7 @@ def login():
     password = request.json.get("password", None)
     user = User.query.filter_by(email=email).first()
 
-    if user.email is "None":
+    if user is None or user.email == "None":
         return jsonify({"msg":"Error en el Email"}), 401
     
     if user.password != password:

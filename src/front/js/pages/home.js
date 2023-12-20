@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
 import { Link } from "react-router-dom";
-import rigoImageUrl from "../../img/rigo-baby.jpg";
+import rigoImageUrl from "../../img/cohete.png";
 import "../../styles/home.css";
 
 export const Home = () => {
@@ -9,16 +9,12 @@ export const Home = () => {
 
 	return (
 		<div className="text-center mt-5">
-			<Link to="/login">
-				<button className="btn btn-primary">Boton a Login</button>
-			</Link>
-			<Link to="/signup">
-				<button className="btn btn-primary">Boton a signup</button>
-			</Link>
-			<h1>Hello Rigo!!</h1>
+			<h1>Bienvenido a la API de Usuarios</h1>
+
 			<p>
-				<img src={rigoImageUrl} />
+				<img style={{width:"200px"}} src={rigoImageUrl} />
 			</p>
+			<p>Puedes crear usuarios y hacer login con ellos, se autentifican por Tokens, ya te digo yo que 3 cositas más y esto es un instagram.</p>
 			<div className="alert alert-info">
 				{store.message || "Loading message from the backend (make sure your python backend is running)..."}
 			</div>

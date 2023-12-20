@@ -16,7 +16,15 @@ CORS(api)
 def handle_hello():
 
     response_body = {
-        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
+        "message": "Los servidores del backend estan corriendo!"
     }
 
+    return jsonify(response_body), 200
+
+
+@api.route('/signup', methods=['POST', 'GET'])
+def handle_signup():
+    response_body = {
+        "message": "Estoy mandando este mensaje desde routes.py babbbbyyyy"
+    }
     return jsonify(response_body), 200
