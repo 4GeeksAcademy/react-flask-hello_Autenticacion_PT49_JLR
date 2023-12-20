@@ -39,6 +39,7 @@ export const Login = () => {
                 const data = await response.json();
                 // Aquí puedes manejar la respuesta según sea necesario
                 console.log("Inicio de sesión exitoso", data);
+                
                 // Puedes realizar acciones adicionales aquí si es necesario
             } else {
                 // Manejar errores en la respuesta
